@@ -1,0 +1,27 @@
+@import "../../variables.less";
+
+#TopicDetail {
+
+  .topic .panel-heading {
+    background-color: #fff;
+  }
+
+  .topic-header {
+    font-size: @font-size-h2;
+  }
+
+  .topic-changes small {
+    font-size: @font-size-small;
+
+    span:before {
+      content: " • ";
+    }
+  }
+
+  @media (max-width: @screen-sm-max) {
+    .topic {
+      margin-bottom: 0px;
+      border-bottom: none;
+    }
+  }
+}

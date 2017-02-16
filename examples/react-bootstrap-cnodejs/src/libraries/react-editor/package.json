@@ -1,0 +1,12 @@
+{
+  "async": true,
+  "name": "editor",
+  "private": false,
+  "main": "./index.js",
+  "vendors": [
+    "draft-js",
+    "draftjs-to-html",
+    "draftjs-to-markdown",
+    "react-draft-wysiwyg"
+  ]
+}

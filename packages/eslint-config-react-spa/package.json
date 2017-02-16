@@ -1,0 +1,17 @@
+{
+  "name": "eslint-config-react-spa",
+  "version": "0.0.2",
+  "description": "ESLint configuration used by Create React SPA",
+  "repository": "https://github.com/zhbhun/create-react-spa",
+  "license": "BSD-3-Clause",
+  "engines": {
+    "node": ">=4"
+  },
+  "bugs": {
+    "url": "https://github.com/zhbhun/create-react-spa/issues"
+  },
+  "files": [
+    "index.js"
+  ],
+  "main": "index.js"
+}

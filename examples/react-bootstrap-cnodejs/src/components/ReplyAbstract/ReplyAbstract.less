@@ -1,0 +1,53 @@
+@import "../../variables.less";
+
+.ReplyAbstract {
+  padding: 10px;
+  border-bottom: 1px solid #f0f0f0;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  .user_avatar {
+    float: left;
+    display: block;
+
+    img {
+      width: 30px;
+      height: 30px;
+    }
+  }
+
+  .user_action {
+    float: right;
+  }
+
+  .user_info {
+    display: inline-block;
+    margin-left: 10px;
+    font-size: 12px;
+  }
+
+  .reply_author {
+    font-weight: 700;
+  }
+
+  .reply_time {
+    margin-left: 0.5em;
+  }
+
+  .ReplyContent {
+    padding-left: 50px;
+    font-size: 15px;
+    line-height: 1.7em;
+  }
+
+  @media (max-width: @screen-sm-max) {
+    .ReplyContent {
+      clear: both;
+      margin-top: 15px;
+      padding-left: 0px;
+    }
+  }
+}
+
