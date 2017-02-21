@@ -11,7 +11,7 @@ var WebpackCommonConfig = require('./webpack.config.common');
  */
 function WebpackDevConfig(paths, config) {
   var source = paths.source;
-  var commonConfig = WebpackCommonConfig(paths, 'server');
+  var commonConfig = WebpackCommonConfig(paths);
 
   // This is the development configuration.
   // It is focused on developer experience and fast rebuilds.

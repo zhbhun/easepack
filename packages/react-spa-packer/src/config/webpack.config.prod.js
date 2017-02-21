@@ -11,7 +11,7 @@ var WebpackCommonConfig = require('./webpack.config.common');
 function WebpackProdConfig(paths, config) {
   var source = paths.source;
 
-  var commonConfig = WebpackCommonConfig(paths, 'prod');
+  var commonConfig = WebpackCommonConfig(paths);
 
   // This is the production configuration.
   // It compiles slowly and is focused on producing a fast and minimal bundle.

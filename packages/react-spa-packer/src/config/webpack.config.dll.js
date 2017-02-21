@@ -14,7 +14,7 @@ var WebpackCommonConfig = require('./webpack.config.common');
  */
 function WebpackDllConfig(paths, name, dependencies) {
   var output = paths.output;
-  var commonConfig = WebpackCommonConfig(paths, 'dll');
+  var commonConfig = WebpackCommonConfig(paths, true);
 
   // This is the dll configuration.
   // It is focused on developer experience and fast rebuilds.

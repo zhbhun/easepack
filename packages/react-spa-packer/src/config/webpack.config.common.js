@@ -40,38 +40,32 @@ var postcssLoader = {
 };
 
 // TODO get different environment filename
-function getFilename(mode, filename) {
-  if (mode === 'server') {
+function getFilename(debug, filename) {
+  if (debug) {
     return Object.assign({}, filename, {
-      js: 'main.js',
-    });
-  } else if (mode === 'dll') {
-    // dll not need hash name
-    return {
       js: '[name].js',
       css: '[name].css',
+      // TODO conflict?
       media: '[name].[ext]',
-    }
-  } else if (mode === 'prod') {
-    return filename;
+    });
   }
+  return filename;
 }
 
 /**
  * Webpack common config generator
  *
  * @param {object} paths @see ../path
- * @param {string} mode server | dll | prod
+ * @param {boolean} dll
  */
-function WebpackCommonConfig(paths, mode) {
+function WebpackCommonConfig(paths, dll) {
   var env = getClientEnvironment(publicUrl),
     source = paths.source,
     output = paths.output,
-    filename = getFilename(mode, output.filename),
-    debug = mode === 'server' || mode === 'dll',
-    server = mode === 'server',
-    dll = mode === 'dll',
-    product = mode === 'prod';
+    debug = env['process.env']['NODE_ENV'] == '"development"',
+    product = env['process.env']['NODE_ENV'] === '"production"',
+    server = debug && !dll,
+    filename = getFilename(debug, output.filename);
   return {
     // TODO description
     cache: true,
@@ -85,7 +79,7 @@ function WebpackCommonConfig(paths, mode) {
 
     output: {
       // TODO description
-      path: dll ? output.path.dllPath : output.path.buildPath,
+      path: (dll ? output.path.dllPath : output.path.buildPath) || __dirname,
       // Add /* filename */ comments to generated require()s in the output.
       pathinfo: true,
       // JavaScript file name rule
@@ -283,11 +277,11 @@ function WebpackCommonConfig(paths, mode) {
         },
       }),
       // TODO comment
-      new StatsPlugin('stats.json', {
+      new StatsPlugin('stats.json', { // TODO Custom stats file name
         chunkModules: true,
       }),
     ]: [])
-    .concat(server || product ? [
+    .concat(!dll ? [
       // TODO
       // Makes some environment variables available in index.html.
       // The public URL is available as %PUBLIC_URL% in index.html, e.g.:
@@ -318,7 +312,7 @@ function WebpackCommonConfig(paths, mode) {
     ] : []),
 
     // TODO description
-    profile: product,
+    profile: product && !dll, // TODO Does DLL chunk need stat?
 
     // Some libraries import Node modules but don't use them in the browser.
     // Tell Webpack to provide empty mocks for them so importing them works.
