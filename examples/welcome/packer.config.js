@@ -1,6 +1,6 @@
 var path = require('path');
 
-var context = path.resolve(__dirname, '../');
+var context = path.resolve(__dirname);
 
 module.exports = {
   context: context,
@@ -12,8 +12,8 @@ module.exports = {
   },
   output: {
     path: {
+      dll: '.dll',
       build: 'build',
     },
   },
 };
-
