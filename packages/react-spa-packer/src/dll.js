@@ -64,7 +64,7 @@ function recordCache(paths, name, dependencies) {
  */
 function build(paths, config, callback) {
   var name = config.name;
-  var dependencies = config.dependencies || Object.keys(require(paths.source.packagePath).dependencies);
+  var dependencies = config.dependencies;
   if (!isCacheExpired(paths, name, dependencies)) {
     callback && callback();
     return;

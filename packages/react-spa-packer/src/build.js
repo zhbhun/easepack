@@ -3,6 +3,7 @@ var chalk = require('chalk');
 var rimraf = require('rimraf');
 var webpack = require('webpack');
 
+var paths = require('./config/paths');
 var setupCompiler = require('./utils/setupCompiler');
 var WebpackProdConfig = require('./config/webpack.config.prod');
 
@@ -17,9 +18,11 @@ function printErrors(summary, errors) {
 }
 
 function createVendorPicker(dependencies, exceptions, paths) {
-  let regExp = null;
-  let exceptionRegExps = null;
-  if (dependencies === Infinity) {
+  var regExp = null;
+  var exceptionRegExps = null;
+  var isBaseChunk = dependencies === Infinity;
+  if (isBaseChunk) {
+    // base chunk
     regExp = /node_modules/;
     if (exceptions && exceptions.length > 0) {
       exceptionRegExps = new RegExp(`node_modules/(${exceptions.join('|')})($|/)`);
@@ -34,73 +37,81 @@ function createVendorPicker(dependencies, exceptions, paths) {
       return false;
     }
 
-    // TODO test not js module
-    if (userRequest.indexOf(paths.source.srcPath) >= 0) {
+    if (isBaseChunk && userRequest.indexOf(paths.source.srcPath) >= 0) {
       return false;
     } else if (exceptionRegExps && exceptionRegExps.test(userRequest)) {
       return false;
     } else {
-      // if (userRequest.indexOf('/src/libraries/react-editor') >= 0) {
-      //   console.log(userRequest, regExp, regExp.test(userRequest));
-      // }
-      // if (userRequest.indexOf('!') >= 0) {
-      //   console.log(userRequest);
-      // }
       return regExp.test(userRequest);
     }
   }
 }
 
-function addVendors(paths, splits) {
+/**
+ *
+ * @param {Object} paths @see ./config/paths
+ * @param {Array} chunks [{ name: string, dependencies: string[] }, ...]
+ * @returns
+ */
+function addVendors(paths, chunks) {
   var alias = {};
   var rules = [];
   var plugins = [];
-  if (splits) {
-    var { dependencies } = splits;
-    var splitsConfig = {};
-    dependencies.forEach(function (dependency) {
-      var modules = splits[dependency];
-      if (typeof modules === 'string') {
-        var pkg = require(path.resolve(modules, 'package.json'));
-        var { async, vendors = []} = pkg;
-        splitsConfig[dependency] = {
-          async: async,
-          entry: modules,
-          modules: vendors,
-        };
-      } else {
-        splitsConfig[dependency] = {
-          async: false,
-          modules,
-        };
-      }
-    });
-    dependencies.forEach(function (dependency, index) {
-      var { async, entry, modules } = splitsConfig[dependency];
-      if (async) {
-        alias[dependency] = entry;
-        rules.push({
-          enforce: 'post',
-          test: /\.(js|jsx)$/,
-          include: entry,
-          use: `bundle-loader?name=${dependency}`,
-        });
-      } else {
-        var chunks = dependencies.slice(index + 1);
-        let exceptions = [];
-        chunks.forEach(function (chunk, j) {
-          exceptions = exceptions.concat(splitsConfig[chunk].modules);
-        });
-        plugins.unshift(
-          new webpack.optimize.CommonsChunkPlugin({
-            name: dependency,
-            chunks: ['main'].concat(chunks),
-            minChunks: createVendorPicker(modules, exceptions, paths),
-          })
-        );
-      }
-    });
-  }
+  var allChunks = [{
+    async: false,
+    name: 'base',
+    dependencies: Infinity,
+
+  }].concat(chunks || []);
+  var chunksName = [];
+  var chunksConfig = {};
+  allChunks.forEach(function (item) {
+    var name = item.name;
+    chunksName.push(name);
+    var dependencies = item.dependencies;
+    if (typeof dependencies === 'string') {
+      // project source module
+      var pkg = require(path.resolve(dependencies, 'package.json'));
+      chunksConfig[name] = {
+        async: pkg.async,
+        entry: dependencies,
+        modules: pkg.vendors || [],
+      };
+    } else {
+      // vendor module
+      chunksConfig[name] = {
+        async: false,
+        modules: dependencies,
+      };
+    }
+  });
+  chunksName.forEach(function (name, index) {
+    var chunkConfig = chunksConfig[name];
+    if (chunkConfig.async) {
+      // async chunk
+      alias[name] = chunkConfig.entry;
+      rules.push({
+        enforce: 'post',
+        test: /\.(js|jsx)$/,
+        include: chunkConfig.entry,
+        use: `bundle-loader?name=${name}`,
+      });
+    } else {
+      // common chunk
+      var extractChunks = chunksName.slice(index + 1);
+      var exceptionModules = [];
+      extractChunks.forEach(function (name, j) {
+        exceptionModules = exceptionModules.concat(chunksConfig[name].modules);
+      });
+      plugins.unshift(
+        new webpack.optimize.CommonsChunkPlugin({
+          name: name,
+          chunks: ['main'].concat(extractChunks),
+          minChunks: createVendorPicker(chunkConfig.modules, exceptionModules, paths),
+        })
+      );
+    }
+  });
   return {
     resolve: {
       alias,
@@ -113,8 +124,13 @@ function addVendors(paths, splits) {
 }
 
 function getDefaultConfig(config) {
-  // TODO generate default config if not config
-  return config;
+  var context = config.context;
+  var source = config.source;
+  var output = config.output;
+  var pathsConfig = paths({ context, source, output });
+  return Object.assign({}, config, {
+    paths: pathsConfig,
+  });
 }
 
 /**
@@ -139,24 +155,23 @@ function build(cfg) {
     config.paths,
     addVendors(config.paths, config.chunks)
   );
-
   setupCompiler(webpackConfig)
-  .run((err, stats) => {
-    if (err) {
-      printErrors('Failed to compile.', [err]);
-      process.exit(1);
-    }
+    .run((err, stats) => {
+      if (err) {
+        printErrors('Failed to compile.', [err]);
+        process.exit(1);
+      }
 
-    if (stats.compilation.errors.length) {
-      printErrors('Failed to compile.', stats.compilation.errors);
-      process.exit(1);
-    }
+      if (stats.compilation.errors.length) {
+        printErrors('Failed to compile.', stats.compilation.errors);
+        process.exit(1);
+      }
 
-    if (process.env.CI && stats.compilation.warnings.length) {
-      printErrors('Failed to compile.', stats.compilation.warnings);
-      process.exit(1);
-    }
-  });
+      if (process.env.CI && stats.compilation.warnings.length) {
+        printErrors('Failed to compile.', stats.compilation.warnings);
+        process.exit(1);
+      }
+    });
 }
 
 module.exports = build;

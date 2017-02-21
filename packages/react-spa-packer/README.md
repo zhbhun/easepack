@@ -1,7 +1,28 @@
-# react-scripts
+```javascript
+{
+  context: string,
+  source: {
+    src: string,
+    main: string,
+    pbulic: string,
+    html: string,
+  },
+  output: {
+    path: {
+      dll: string,
+      build: string,
+    },
+    filename: {
+      js: string,
+      css: string,
+      media: string,
+    },
+  },
+  dll: string | object, // { name: string, dependencies: string[] }
+  chunks: object[], // { name: string, dependencies: string[] | string}
+  webpack: object,
+}
+```
 
-This package includes scripts and configuration used by [Create React App](https://github.com/facebookincubator/create-react-app).  
-Please refer to its documentation:
-
-* [Getting Started](https://github.com/facebookincubator/create-react-app/blob/master/README.md#getting-started) – How to create a new app.
-* [User Guide](https://github.com/facebookincubator/create-react-app/blob/master/packages/react-scripts/template/README.md) – How to develop apps bootstrapped with Create React App.
+- [ ] 优化默认配置
+- ...

@@ -3,6 +3,7 @@ var chalk = require('chalk');
 var WebpackDevServer = require('webpack-dev-server');
 var clearConsole = require('react-dev-utils/clearConsole');
 
+var paths = require('./config/paths');
 var WebpackDevConfig = require('./config/webpack.config.dev');
 var setupCompiler = require('./utils/setupCompiler');
 var runWithPortCheck = require('./utils/runWithPortCheck');
@@ -87,8 +88,21 @@ function runDevServer(compiler, config, address) {
 }
 
 function getDefaultConfig(config) {
-  // TODO generate default config if not config
-  return config;
+  var context = config.context;
+  var source = config.source;
+  var output = config.output;
+  var pathsConfig = paths({ context, source, output });
+  var dllConfig = config.dll || 'vendor';
+  if (typeof dllConfig === 'string') {
+    dllConfig = {
+      name: dllConfig,
+      dependencies: Object.keys(require(pathsConfig.source.packagePath).dependencies),
+    };
+  }
+  return Object.assign({}, config, {
+    paths: pathsConfig,
+    dll: dllConfig,
+  });
 }
 
 /**
