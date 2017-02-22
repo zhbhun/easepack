@@ -10,15 +10,6 @@ var WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeMod
 
 var getClientEnvironment = require('./env');
 
-// TODO
-// Webpack uses `publicPath` to determine where the app is being served from.
-// In development, we always serve from the root. This makes config easier.
-var publicPath = '/';
-// `publicUrl` is just like `publicPath`, but we will provide it to our app
-// as %PUBLIC_URL% in `index.html` and `process.env.PUBLIC_URL` in JavaScript.
-// Omit trailing slash as %PUBLIC_PATH%/xyz looks better than %PUBLIC_PATH%xyz.
-var publicUrl = '';
-
 // TODO description
 var postcssLoader = {
   loader: 'postcss-loader',
@@ -59,9 +50,16 @@ function getFilename(debug, filename) {
  * @param {boolean} dll
  */
 function WebpackCommonConfig(paths, dll) {
-  var env = getClientEnvironment(publicUrl),
-    source = paths.source,
+  var source = paths.source,
     output = paths.output,
+    // Webpack uses `publicPath` to determine where the app is being served from.
+    // It requires a trailing slash, or the file assets will get an incorrect path.
+    publicPath = output.path.publicPath,
+    // `publicUrl` is just like `publicPath`, but we will provide it to our app
+    // as %PUBLIC_URL% in `index.html` and `process.env.PUBLIC_URL` in JavaScript.
+    // Omit trailing slash as %PUBLIC_URL%/xyz looks better than %PUBLIC_URL%xyz.
+    publicUrl = publicPath.slice(0, -1),
+    env = getClientEnvironment(publicUrl),
     debug = env['process.env']['NODE_ENV'] == '"development"',
     product = env['process.env']['NODE_ENV'] === '"production"',
     server = debug && !dll,

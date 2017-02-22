@@ -1,6 +1,6 @@
 {
   "name": "react-spa-packer",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Configuration and scripts for pack React SPA.",
   "author": "zhbhun",
   "repository": "https://github.com/zhbhun/create-react-spa",

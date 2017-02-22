@@ -16,6 +16,7 @@ var DEFAULT_PATHS = {
     path: {
       dll: '.dll',
       build: 'build',
+      publicPath: '/',
     },
     filename: {
       js: 'static/js/[name].[chunkhash:8].js',
@@ -37,12 +38,15 @@ module.exports = function (paths) {
   var root = (paths && paths.context) || DEFAULT_PATHS.context;
   return mergeWith(paths, DEFAULT_PATHS, function (objValue, srcValue, key, object, source, stack) {
     if (key === 'context') {
-      return objValue || srcValue;
+      return root;
     } else if (key === 'filename') {
       return Object.assign({}, srcValue, objValue);
     } else if (typeof srcValue === 'string') {
-      object[key + 'Path'] = path.resolve(root, objValue || srcValue);
-      return objValue || srcValue;
+      var value = typeof objValue === 'string' ? objValue : srcValue;
+      if (key.indexOf('Path') < 0) {
+        object[key + 'Path'] = path.resolve(root, value);
+      }
+      return value;
     }
   });
 }
