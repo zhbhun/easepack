@@ -13,6 +13,7 @@ module.exports = {
   output: {
     path: {
       build: 'build',
+      publicPath: '',
     },
   },
   chunks: [
