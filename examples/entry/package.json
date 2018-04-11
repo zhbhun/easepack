@@ -1,0 +1,12 @@
+{
+  "private": true,
+  "scripts": {
+    "build:script": "easepack build --config ./config/script.js",
+    "start:script": "easepack start --config ./config/script.js",
+    "build:html": "easepack build --config ./config/html.js",
+    "start:html": "easepack start --config ./config/html.js"
+  },
+  "dependencies": {
+    "easepack": "file:../../"
+  }
+}
