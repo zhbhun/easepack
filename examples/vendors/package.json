@@ -1,0 +1,19 @@
+{
+  "private": true,
+  "scripts": {
+    "build:true": "easepack build --config ./config/true.js",
+    "start:true": "easepack start --config ./config/true.js",
+    "build:array": "easepack build --config ./config/array.js",
+    "start:array": "easepack start --config ./config/array.js",
+    "build:object": "easepack build --config ./config/object.js",
+    "start:object": "easepack start --config ./config/object.js"
+  },
+  "dependencies": {
+    "lodash": "^4.17.5",
+    "react": "^16.3.1",
+    "react-dom": "^16.3.1"
+  },
+  "devDependencies": {
+    "easepack": "file:../../"
+  }
+}

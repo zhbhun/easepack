@@ -1,0 +1,9 @@
+{
+  "private": true,
+  "scripts": {
+    "build": "easepack build --config ./config/build.js"
+  },
+  "devDependencies": {
+    "easepack": "file:../../"
+  }
+}
