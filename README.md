@@ -39,10 +39,26 @@ Build production files:
         ```
           easepack-demo
           |- package.json
+        + |- .eslintrc
         + |- easepack.js
         + |- index.html
         + |- /src
         +   |- index.js
+        ```
+
+    - .eslintrc
+
+        ```json
+        {
+          "extends": "eslint:recommended",
+          "parserOptions": {
+            "ecmaVersion": 6,
+            "sourceType": "module"
+          },
+          "env": {
+            "browser": true
+          }
+        }
         ```
 
     - easepack.js
@@ -87,11 +103,11 @@ Build production files:
 
 - Start development server:
 
-    `npx easepack start --config ./config.js`
+    `npx easepack start --config ./easepack.js`
 
 - Build production files:
 
-    `npx easepack build --config ./config.js`
+    `npx easepack build --config ./easepack.js`
 
 # Configuration
 
