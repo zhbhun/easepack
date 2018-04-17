@@ -179,6 +179,11 @@ Easepack provide two preset, es and react. They all support follow options:
     - env.production
     - env.development
 
+- hot: enable hot reloading
+- sourceMap: enable source map
+- analyzer: enable bundle analyzer
+- dataURLLimit: define url loader limit
+
 ## Custom Presets
 
 Refer to source code [es](./src/config/es.js) and [react](./src/config/react.js)

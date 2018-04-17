@@ -6,12 +6,12 @@ class QRCodePlugin {
   }
 
   print() {
-    qrcode.toString(this.url, { type: 'terminal' }, function (error, data) {
+    qrcode.toString(this.url, { type: 'terminal' }, (error, data) => {
       console.log();
-      if(error) {
-        console.warn(error)
+      if (error) {
+        console.warn(error);
       } else {
-        console.log(data)
+        console.log(data);
       }
       console.log();
     });
