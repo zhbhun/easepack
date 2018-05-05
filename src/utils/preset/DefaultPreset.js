@@ -81,8 +81,8 @@ class DefaultPreset {
       html: '[name].html',
     },
     development: {
-      js: '[name].js',
-      css: '[name].css',
+      js: '[name].[hash:8].js',
+      css: '[name].[hash:8].css',
       media: '[name].[hash:8].[ext]',
       manifest: '[name].manifest.json',
       library: '[name]_library',
@@ -150,7 +150,7 @@ class DefaultPreset {
               template: filePath,
               filename: filename.html.replace('[name]', key),
               chunks: [key],
-              hash: !production,
+              hash: false,
             }));
           } else {
             result.entry[key] = value;
