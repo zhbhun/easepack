@@ -134,7 +134,8 @@ class DefaultPreset {
     // input
     const { entry, plugins: htmlPlugins } = (() => {
       const namedInput = typeof input === 'object' ? input : { index: input };
-      return Object.keys(namedInput).reduce(
+      const namedInputKeys = Object.keys(namedInput);
+      return namedInputKeys.reduce(
         (result, key) => {
           const value = namedInput[key];
           if (/\.html$/.test(value)) {
@@ -150,6 +151,7 @@ class DefaultPreset {
               template: filePath,
               filename: filename.html.replace('[name]', key),
               // chunks: [key],
+              excludeChunks: namedInputKeys.filter(item => item !== key),
               hash: false,
             }));
           } else {
