@@ -149,7 +149,7 @@ class DefaultPreset {
               chunksSortMode: 'dependency',
               template: filePath,
               filename: filename.html.replace('[name]', key),
-              chunks: [key],
+              // chunks: [key],
               hash: false,
             }));
           } else {
