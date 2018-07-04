@@ -296,7 +296,7 @@ class DefaultPreset {
           test: /\.ejs$/,
           use: [
             {
-              loader: 'ejs-compiled-loader',
+              loader: 'ejs-compiled-loader-webpack4',
             },
             {
               loader: 'extract-loader',
