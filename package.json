@@ -52,7 +52,7 @@
     "cross-spawn": "^6.0.5",
     "css-loader": "~0.28.11",
     "detect-port": "^1.2.3",
-    "ejs-compiled-loader": "^1.1.0",
+    "ejs-compiled-loader": "^2.2.0",
     "eslint-loader": "^2.0.0",
     "extract-loader": "^2.0.1",
     "file-loader": "~1.1.11",
