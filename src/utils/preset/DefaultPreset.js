@@ -186,8 +186,8 @@ class DefaultPreset {
       },
       resolve: {
         extensions: production
-          ? ['.js', '.json', '.prod.js']
-          : ['.js', '.json', '.dev.js'],
+          ? ['.es', '.js', '.json', '.prod.js']
+          : ['.es', '.js', '.json', '.dev.js'],
       },
       module: {
         html$pre: {
@@ -207,7 +207,7 @@ class DefaultPreset {
         },
         eslint: {
           enforce: 'pre',
-          test: /\.js$/,
+          test: /\.js$|\.es$/,
           exclude: /node_modules/,
           use: {
             loader: 'eslint-loader',
@@ -218,7 +218,7 @@ class DefaultPreset {
           },
         },
         js: {
-          test: /\.js$/,
+          test: /\.js$|\.es$/,
           exclude: /node_modules/,
           use: {
             loader: 'babel-loader',
@@ -314,6 +314,7 @@ class DefaultPreset {
           exclude: [
             /\.html$/,
             /\.ejs$/,
+            /\.es$/,
             /\.js$/,
             /\.css$/,
             /\.scss$/,
