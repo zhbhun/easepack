@@ -105,6 +105,7 @@ class DefaultPreset {
       sourceMap: production ? false : 'eval',
       analyzer: !!production,
       dataURLLimit: production ? 5120 : 1,
+      babelRuntime: true,
     };
   };
 
@@ -237,7 +238,8 @@ class DefaultPreset {
                 ],
                 'stage-2',
               ],
-              plugins: ['transform-runtime'].concat(production ? ['lodash'] : []),
+              plugins: (options.babelRuntime ? ['transform-runtime'] : [])
+                .concat(production ? ['lodash'] : []),
             },
           },
         },
