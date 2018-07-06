@@ -55,6 +55,8 @@ class DefaultPreset {
    * @param {string} options.sourceMap enable source map
    * @param {boolean} options.analyzer bundle analyzer
    * @param {number} options.dataURLLimit Byte limit to inline files as Data URL
+   * @param {boolean} options.babelRuntime enable babel runtime
+   * @param {boolean} options.noEmitOnErrors disable emit while errors
    * @param {object} raw @see https://webpack.js.org/configuration
    */
   constructor(command, options = {}, raw = {}) {
@@ -106,6 +108,7 @@ class DefaultPreset {
       analyzer: !!production,
       dataURLLimit: production ? 5120 : 1,
       babelRuntime: true,
+      noEmitOnErrors: true,
     };
   };
 
@@ -238,8 +241,10 @@ class DefaultPreset {
                 ],
                 'stage-2',
               ],
-              plugins: (options.babelRuntime ? ['transform-runtime'] : [])
-                .concat(production ? ['lodash'] : []),
+              plugins: (options.babelRuntime
+                ? ['transform-runtime']
+                : []
+              ).concat(production ? ['lodash'] : []),
             },
           },
         },
@@ -349,11 +354,11 @@ class DefaultPreset {
     };
   };
 
-  makeCommonPlugins = () => [
-    new ProgressBarPlugin(),
-    new CaseSensitivePathsPlugin(),
-    new webpack.NoEmitOnErrorsPlugin(),
-  ];
+  makeCommonPlugins = () =>
+    [
+      new ProgressBarPlugin(),
+      new CaseSensitivePathsPlugin(),
+    ].concat(this.options.noEmitOnErrors ? [new webpack.NoEmitOnErrorsPlugin()] : []);
 
   makeModePlugins = () => {
     const production = this.isProduction();
