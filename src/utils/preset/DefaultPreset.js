@@ -333,7 +333,7 @@ class DefaultPreset {
               loader: 'url-loader',
               options: {
                 limit: dataURLLimit,
-                publicPath,
+                publicPath: fullPublicPath,
                 name: filename.media,
               },
             },
