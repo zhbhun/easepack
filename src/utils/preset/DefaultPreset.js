@@ -55,6 +55,7 @@ class DefaultPreset {
    * @param {string} options.sourceMap enable source map
    * @param {boolean} options.analyzer bundle analyzer
    * @param {number} options.dataURLLimit Byte limit to inline files as Data URL
+   * @param {number} options.cssModules
    * @param {boolean} options.babelRuntime enable babel runtime
    * @param {boolean} options.noEmitOnErrors disable emit while errors
    * @param {object} raw @see https://webpack.js.org/configuration
@@ -107,6 +108,7 @@ class DefaultPreset {
       sourceMap: production ? false : 'eval',
       analyzer: !!production,
       dataURLLimit: production ? 5120 : 1,
+      cssModules: false,
       babelRuntime: true,
       noEmitOnErrors: true,
     };
@@ -128,6 +130,7 @@ class DefaultPreset {
       hot,
       sourceMap,
       dataURLLimit,
+      cssModules,
     } = options;
     const production = this.isProduction();
     const fullPublicPath =
@@ -275,6 +278,8 @@ class DefaultPreset {
               options: {
                 importLoaders: 1,
                 minimize: production,
+                modules: cssModules,
+                localIdentName: production ? '[hash:base64:5]' : '[name]-[local]-[hash:base64:5]',
                 sourceMap: !production,
               },
             },
