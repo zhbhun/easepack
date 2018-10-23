@@ -1,32 +1,30 @@
 {
   "name": "easepack",
   "version": "5.0.0",
-  "private": false,
   "description": "webpack with preset",
   "author": "zhbhun",
   "repository": {
     "type": "git",
     "url": "https://github.com/zhbhun/easepack"
   },
-  "license": "MIT",
-  "engines": {
-    "node": ">=8"
-  },
   "bugs": {
     "url": "https://github.com/zhbhun/easepack/issues"
   },
+  "license": "MIT",
   "keywords": [
-    "webpack",
-    "spa"
+    "webpack"
   ],
+  "engines": {
+    "node": ">=8"
+  },
+  "bin": {
+    "easepack": "./bin/easepack.js"
+  },
+  "main": "./lib/index.js",
   "files": [
     "bin",
     "lib"
   ],
-  "main": "./lib/index.js",
-  "bin": {
-    "easepack": "./bin/easepack.js"
-  },
   "scripts": {
     "clean": "rimraf ./lib",
     "build": "npm run clean && babel src --out-dir lib",

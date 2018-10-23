@@ -2,20 +2,26 @@
   "name": "easepack-preset-es",
   "version": "5.0.0",
   "description": "easepack preset for ecmascript",
-  "main": "lib/index.js",
+  "author": "zhbhun",
+  "homepage": "https://github.com/zhbhun/easepack#readme",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/zhbhun/easepack.git"
   },
-  "keywords": [
-    "webpack"
-  ],
-  "author": "zhbhun",
-  "license": "MIT",
   "bugs": {
     "url": "https://github.com/zhbhun/easepack/issues"
   },
-  "homepage": "https://github.com/zhbhun/easepack#readme",
+  "license": "MIT",
+  "keywords": [
+    "webpack"
+  ],
+  "engines": {
+    "node": ">=8"
+  },
+  "main": "lib/index.js",
+  "files": [
+    "lib"
+  ],
   "scripts": {
     "clean": "rimraf ./lib",
     "build": "npm run clean && babel src --out-dir lib",
