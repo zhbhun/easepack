@@ -1,6 +1,6 @@
 {
   "name": "easepack-preset-es",
-  "version": "4.0.0",
+  "version": "5.0.0",
   "description": "easepack preset for ecmascript",
   "main": "lib/index.js",
   "repository": {
