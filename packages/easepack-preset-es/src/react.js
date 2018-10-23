@@ -1,7 +1,7 @@
-const DefaultPreset = require('../utils/preset/DefaultPreset');
+const DefaultPreset = require('.//DefaultPreset');
 
 /**
- * @param {object} options @see ../utils/preset/DefaultPreset
+ * @param {object} options @see ./DefaultPreset
  */
 module.exports = (command, options, raw) => {
   const config = new DefaultPreset(command, options, raw);

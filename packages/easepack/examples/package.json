@@ -1,0 +1,10 @@
+{
+  "private": true,
+  "scripts": {
+    "build": "easepack build --config ./config.js",
+    "start": "easepack start --config ./config.js"
+  },
+  "dependencies": {
+    "easepack": "file:../"
+  }
+}

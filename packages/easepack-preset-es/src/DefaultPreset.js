@@ -11,13 +11,12 @@ const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const ProgressBarPlugin = require('progress-bar-webpack-plugin');
-const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin');
 // const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
-const QRCodePlugin = require('../qrcode-webpack-plugin');
+const QRCodePlugin = require('./qrcode-webpack-plugin');
 
 const mergeOption = merge.strategy({
   input: 'replace',
@@ -56,7 +55,6 @@ class DefaultPreset {
    * @param {boolean} options.analyzer bundle analyzer
    * @param {number} options.dataURLLimit Byte limit to inline files as Data URL
    * @param {number} options.cssModules
-   * @param {boolean} options.babelRuntime enable babel runtime
    * @param {boolean} options.noEmitOnErrors disable emit while errors
    * @param {object} raw @see https://webpack.js.org/configuration
    */
@@ -71,8 +69,7 @@ class DefaultPreset {
     this.config = this.makeConfig();
   }
 
-  getDefaultMode = command =>
-    (command === 'build' ? 'production' : 'development');
+  getDefaultMode = command => (command === 'build' ? 'production' : 'development');
 
   getDefaultFilenames = () => ({
     production: {
@@ -103,13 +100,12 @@ class DefaultPreset {
       outputPath: './dist',
       publicPath: '/',
       filename: this.getDefaultFilenames()[mode],
-      targets: { browsers: ['last 2 versions', 'safari >= 7'] },
+      targets: undefined,
       hot: command === 'start',
       sourceMap: production ? false : 'eval',
       analyzer: !!production,
       dataURLLimit: production ? 5120 : 1,
       cssModules: false,
-      babelRuntime: true,
       noEmitOnErrors: true,
     };
   };
@@ -133,10 +129,9 @@ class DefaultPreset {
       cssModules,
     } = options;
     const production = this.isProduction();
-    const fullPublicPath =
-      command === 'start' && raw.devServer.public
-        ? `http://${raw.devServer.public}${publicPath}`
-        : publicPath;
+    const fullPublicPath = command === 'start' && raw.devServer.public
+      ? `http://${raw.devServer.public}${publicPath}`
+      : publicPath;
 
     // input
     const { entry, plugins: htmlPlugins } = (() => {
@@ -152,15 +147,17 @@ class DefaultPreset {
               path.dirname(filePath),
               html.match(/<script.*src="(.*)"><\/script>/)[1],
             );
-            result.plugins.push(new HtmlWebpackPlugin({
-              inject: true,
-              chunksSortMode: 'dependency',
-              template: filePath,
-              filename: filename.html.replace('[name]', key),
-              // chunks: [key],
-              excludeChunks: namedInputKeys.filter(item => item !== key),
-              hash: false,
-            }));
+            result.plugins.push(
+              new HtmlWebpackPlugin({
+                inject: true,
+                chunksSortMode: 'dependency',
+                template: filePath,
+                filename: filename.html.replace('[name]', key),
+                // chunks: [key],
+                excludeChunks: namedInputKeys.filter(item => item !== key),
+                hash: false,
+              }),
+            );
           } else {
             result.entry[key] = value;
           }
@@ -168,7 +165,9 @@ class DefaultPreset {
             ? result.entry[key]
             : [result.entry[key]];
           if (command === 'start') {
-            result.entry[key].unshift(`webpack-dev-server/client?http://${raw.devServer.public}`);
+            result.entry[key].unshift(
+              `webpack-dev-server/client?http://${raw.devServer.public}`,
+            );
             if (hot) {
               result.entry[key].unshift('webpack/hot/dev-server');
             }
@@ -200,7 +199,7 @@ class DefaultPreset {
         html$pre: {
           enforce: 'pre',
           test: /\.html$/,
-          use: require.resolve('../html-loader/index.js'),
+          use: require.resolve('./html-loader/index.js'),
         },
         html: {
           test: /\.html$/,
@@ -236,18 +235,37 @@ class DefaultPreset {
               cacheDirectory: true,
               presets: [
                 [
-                  'env',
+                  '@babel/preset-env',
                   {
-                    modules: false,
                     targets,
+                    spec: false,
+                    loose: false,
+                    modules: false,
+                    useBuiltIns: 'usage',
                   },
                 ],
-                'stage-2',
               ],
-              plugins: (options.babelRuntime
-                ? ['transform-runtime']
-                : []
-              ).concat(production ? ['lodash'] : []),
+              plugins: [
+                // Stage 2
+                ['@babel/plugin-proposal-decorators', { legacy: true }],
+                '@babel/plugin-proposal-function-sent',
+                '@babel/plugin-proposal-numeric-separator',
+                '@babel/plugin-proposal-throw-expressions',
+                // Stage 3
+                ['@babel/plugin-proposal-class-properties', { loose: false }],
+                '@babel/plugin-proposal-json-strings',
+                // Others
+                [
+                  '@babel/plugin-transform-runtime',
+                  {
+                    corejs: 2,
+                    helpers: true,
+                    regenerator: true,
+                    useESModules: false,
+                  },
+                ],
+              ],
+              sourceType: 'unambiguous',
             },
           },
         },
@@ -279,7 +297,9 @@ class DefaultPreset {
                 importLoaders: 1,
                 minimize: production,
                 modules: cssModules,
-                localIdentName: production ? '[hash:base64:5]' : '[name]-[local]-[hash:base64:5]',
+                localIdentName: production
+                  ? '[hash:base64:5]'
+                  : '[name]-[local]-[hash:base64:5]',
                 sourceMap: !production,
               },
             },
@@ -291,7 +311,11 @@ class DefaultPreset {
                 plugins() {
                   return [
                     // stylelint(), // TODO
-                    autoprefixer({ browsers: targets.browsers }),
+                    autoprefixer(
+                      targets && targets.browsers
+                        ? { browsers: targets.browsers }
+                        : undefined,
+                    ),
                   ];
                 },
                 sourceMap: !!sourceMap,
@@ -359,11 +383,9 @@ class DefaultPreset {
     };
   };
 
-  makeCommonPlugins = () =>
-    [
-      new ProgressBarPlugin(),
-      new CaseSensitivePathsPlugin(),
-    ].concat(this.options.noEmitOnErrors ? [new webpack.NoEmitOnErrorsPlugin()] : []);
+  makeCommonPlugins = () => [new ProgressBarPlugin(), new CaseSensitivePathsPlugin()].concat(
+    this.options.noEmitOnErrors ? [new webpack.NoEmitOnErrorsPlugin()] : [],
+  );
 
   makeModePlugins = () => {
     const production = this.isProduction();
@@ -371,7 +393,6 @@ class DefaultPreset {
     return production
       ? [
         new webpack.HashedModuleIdsPlugin(),
-        new LodashModuleReplacementPlugin(),
         new MiniCssExtractPlugin({
           filename: filename.css,
           chunkFilename: filename.css,
@@ -505,15 +526,14 @@ class DefaultPreset {
     _.update(this.config, valuePath, updater);
   };
 
-  export = () =>
-    Object.assign({}, this.config, {
-      module: {
-        rules: Object.keys(this.config.module).reduce((rules, key) => {
-          const item = this.config.module[key];
-          return rules.concat(Array.isArray(item) ? item : [item]);
-        }, []),
-      },
-    });
+  export = () => Object.assign({}, this.config, {
+    module: {
+      rules: Object.keys(this.config.module).reduce((rules, key) => {
+        const item = this.config.module[key];
+        return rules.concat(Array.isArray(item) ? item : [item]);
+      }, []),
+    },
+  });
 }
 
 module.exports = DefaultPreset;

@@ -1,0 +1,72 @@
+{
+  "name": "easepack",
+  "version": "4.2.7",
+  "private": false,
+  "description": "webpack with preset",
+  "author": "zhbhun",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zhbhun/easepack"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=8"
+  },
+  "bugs": {
+    "url": "https://github.com/zhbhun/easepack/issues"
+  },
+  "keywords": [
+    "webpack",
+    "spa"
+  ],
+  "files": [
+    "bin",
+    "lib"
+  ],
+  "main": "./lib/index.js",
+  "bin": {
+    "easepack": "./bin/easepack.js"
+  },
+  "scripts": {
+    "clean": "rimraf ./lib",
+    "build": "npm run clean && babel src --out-dir lib",
+    "format": "prettier-eslint --write -l warn \"src/**/*.js\""
+  },
+  "dependencies": {
+    "chalk": "^2.4.1",
+    "cross-spawn": "^6.0.5",
+    "detect-port": "^1.2.3",
+    "ip": "^1.1.5",
+    "lodash": "^4.17.11",
+    "webpack": "^4.14.0",
+    "webpack-dev-server": "^3.1.4",
+    "webpack-merge": "^4.1.3",
+    "yargs": "^12.0.2"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-eslint": "^10.0.1",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-stage-2": "^6.24.1",
+    "eslint": "^5.7.0",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-jsx-a11y": "^6.1.2",
+    "eslint-plugin-react": "^7.11.1",
+    "prettier-eslint-cli": "^4.7.1",
+    "rimraf": "^2.6.2"
+  },
+  "babel": {
+    "presets": [
+      "stage-2",
+      [
+        "env",
+        {
+          "targets": {
+            "node": "8"
+          }
+        }
+      ]
+    ]
+  }
+}

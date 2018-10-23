@@ -5,6 +5,8 @@
     "start": "easepack start --config ./config.js"
   },
   "dependencies": {
-    "easepack": "file:../../"
+    "easepack": "file:../../../easepack",
+    "easepack-preset-es": "file:../../",
+    "eslint": "^5.7.0"
   }
 }

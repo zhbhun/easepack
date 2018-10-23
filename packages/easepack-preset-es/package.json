@@ -1,0 +1,107 @@
+{
+  "name": "easepack-preset-es",
+  "version": "4.0.0",
+  "description": "easepack preset for ecmascript",
+  "main": "lib/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zhbhun/easepack.git"
+  },
+  "keywords": [
+    "webpack"
+  ],
+  "author": "zhbhun",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/zhbhun/easepack/issues"
+  },
+  "homepage": "https://github.com/zhbhun/easepack#readme",
+  "scripts": {
+    "clean": "rimraf ./lib",
+    "build": "npm run clean && babel src --out-dir lib",
+    "format": "prettier-eslint --write -l warn \"src/**/*.js\""
+  },
+  "peerDependencies": {
+    "easepack": "^4.2.7"
+  },
+  "dependencies": {
+    "@babel/core": "^7.1.2",
+    "@babel/plugin-proposal-class-properties": "^7.1.0",
+    "@babel/plugin-proposal-decorators": "^7.1.2",
+    "@babel/plugin-proposal-function-sent": "^7.1.0",
+    "@babel/plugin-proposal-json-strings": "^7.0.0",
+    "@babel/plugin-proposal-numeric-separator": "^7.0.0",
+    "@babel/plugin-proposal-throw-expressions": "^7.0.0",
+    "@babel/plugin-transform-runtime": "^7.1.0",
+    "@babel/preset-env": "^7.1.0",
+    "@babel/preset-react": "^7.0.0",
+    "@babel/preset-stage-2": "^7.0.0",
+    "autodll-webpack4-plugin": "~0.4.2",
+    "autoprefixer": "^9.1.5",
+    "babel-loader": "^8.0.4",
+    "browserslist": "^4.2.1",
+    "case-sensitive-paths-webpack-plugin": "^2.1.2",
+    "chalk": "^2.4.1",
+    "clean-webpack-plugin": "^0.1.19",
+    "css-loader": "^1.0.0",
+    "ejs-compiled-loader-webpack4": "^2.2.0",
+    "eslint": "^5.7.0",
+    "eslint-loader": "^2.0.0",
+    "extract-loader": "^3.0.0",
+    "file-loader": "~2.0.0",
+    "friendly-errors-webpack-plugin": "^1.7.0",
+    "html-loader": "~0.5.5",
+    "html-webpack-plugin": "^3.2.0",
+    "less": "^3.0.4",
+    "less-loader": "^4.0.5",
+    "lodash": "^4.17.10",
+    "mini-css-extract-plugin": "^0.4.1",
+    "node-sass": "^4.9.0",
+    "optimize-css-assets-webpack-plugin": "^5.0.1",
+    "postcss-loader": "^3.0.0",
+    "progress-bar-webpack-plugin": "^1.10.0",
+    "qrcode": "^1.2.0",
+    "read-pkg": "^4.0.1",
+    "resolve-url-loader": "^3.0.0",
+    "sass-loader": "^7.1.0",
+    "style-loader": "~0.23.1",
+    "stylelint": "^9.3.0",
+    "stylelint-config-standard": "^18.2.0",
+    "uglifyjs-webpack-plugin": "1.3.0",
+    "url-loader": "^1.0.1",
+    "webpack": "^4.14.0",
+    "webpack-bundle-analyzer": "^3.0.2",
+    "webpack-dev-server": "^3.1.4",
+    "webpack-merge": "^4.1.3"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.1.2",
+    "babel-eslint": "^10.0.1",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-plugin-import": "^2.13.0",
+    "eslint-plugin-jsx-a11y": "^6.0.3",
+    "eslint-plugin-react": "^7.10.0",
+    "prettier-eslint-cli": "^4.7.1",
+    "rimraf": "^2.6.2"
+  },
+  "babel": {
+    "presets": [
+      [
+        "@babel/preset-env",
+        {
+          "targets": {
+            "node": "8"
+          }
+        }
+      ]
+    ],
+    "plugins": [
+      [
+        "@babel/plugin-proposal-class-properties",
+        {
+          "loose": false
+        }
+      ]
+    ]
+  }
+}

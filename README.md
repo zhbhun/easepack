@@ -1,8 +1,6 @@
 Easepack 是基于 webpack 的通用打包工具，内置常用插件和加载器的默认配置。
 ========
 
-[English Version](./README_en.md)
-
 ## 安装
 
 > npm install --save-dev easepack
@@ -23,7 +21,7 @@ Easepack 是基于 webpack 的通用打包工具，内置常用插件和加载�
 
     - `mkdir easepack-demo && cd easepack-demo`
     - `npm init -y`
-    - `npm install easepack --save-dev`
+    - `npm install easepack easepack-preset-es --save-dev`
 
     ```
       easepack-demo
@@ -38,7 +36,7 @@ Easepack 是基于 webpack 的通用打包工具，内置常用插件和加载�
         {
           "extends": "eslint:recommended",
           "parserOptions": {
-            "ecmaVersion": 6,
+            "ecmaVersion": 2018,
             "sourceType": "module"
           },
           "env": {
@@ -53,7 +51,7 @@ Easepack 是基于 webpack 的通用打包工具，内置常用插件和加载�
         module.exports = {
           presets: [
             [
-              require.resolve('easepack/lib/config/es'), /* 继承 easepack/lib/config/es 的配置 */
+              require.resolve('easepack-preset-es'), /* 继承 easepack/lib/config/es 的配置 */
               {
                 input: 'index.html' /* 设置项目入口文件 */
               }
@@ -121,10 +119,9 @@ Easepack 在 webpack 的基础上增加了一项配置 `preset`，用于继承�
 }
 ```
 
-### 内置 Presets
+### easepack-preset-es
 
-到目前为止，Easepack 内置了两个预设配置：`easepack/lib/config/es` 和 `easepack/lib/config/react`。
-除了后者针对 react 增加了一些 babel 配置外，它们数都支持以下预设参数：
+easepack-preset-es 是 easepack 内置提供的一个通用预设配置，支持以下预设参数：
 
 - mode: 构建模式，等同于 webpack4 新增的属性 [mode](https://webpack.js.org/concepts/mode).
 

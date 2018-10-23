@@ -10,7 +10,11 @@ module.exports = (command, config) => {
       const presetOptions = Array.isArray(preset) ? preset[1] : {};
       return presetFunc(
         command,
-        Object.assign({}, presetOptions, { mode: config.mode }),
+        Object.assign(
+          {},
+          presetOptions,
+          config.mode ? { mode: config.mode } : null,
+        ),
         config,
       );
     })
