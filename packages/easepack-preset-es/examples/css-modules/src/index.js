@@ -1,6 +1,6 @@
 import jsonFormat from 'json-format';
 import classNames from 'classnames';
-import styles from './Home.scss';
+import styles from './Home.module.scss';
 
 var JSON_CONFIG = {
   type: 'space',
@@ -9,9 +9,9 @@ var JSON_CONFIG = {
 
 var rootEle = document.querySelector('#root');
 rootEle.innerHTML = /* html */ `
-  <h1 class="${classNames('title', styles.title)}">
+  <h1 class="${classNames(styles.title)}">
     Hello World
   </h1>
-  <p class="${classNames('paragraph', styles.paragraph)}">Hello World</p>
+  <p class="${classNames(styles.paragraph)}">Hello World</p>
   <pre class=${styles.json}>${jsonFormat(styles, JSON_CONFIG)}</pre>
 `;

@@ -1,7 +1,7 @@
 module.exports = {
   presets: [
     [
-      require.resolve('easepack/lib/config/es'),
+      require.resolve('easepack-preset-es'),
       {
         input: './src/index.html',
         cssModules: true

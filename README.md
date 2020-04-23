@@ -182,7 +182,6 @@ easepack-preset-es 是 easepack 内置提供的一个通用预设配置，支持
 - sourceMap: 是否启用 sourceMap，等同于 [devtool](https://webpack.js.org/configuration/devtool/)，开发环境默认为 `eval`，生产环境默认为 `false`。
 - analyzer: 是否启用构建分析，为 `true` 会使用 `webpack-bundle-analyzer` 来分析打包文件的内部组成和模块占用大小。生成环境默认为 `true`，开发环境默认为 `false`。
 - dataURLLimit：设置 `url-loader` 的属性 [`limit`](https://github.com/webpack-contrib/url-loader#limit)，开发环境默认为 `1`，生产环境默认为 `5120`。
-- cssModules: 是否启动 CSS Modules，默认 `false`。
 - env：针对不同 `mode` 的特殊配置。
 
     - env.production：在 `mode` 等于 `production` 时，该项配置会覆盖外部的预设参数。

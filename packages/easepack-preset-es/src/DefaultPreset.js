@@ -54,7 +54,6 @@ class DefaultPreset {
    * @param {string} options.sourceMap enable source map
    * @param {boolean} options.analyzer bundle analyzer
    * @param {number} options.dataURLLimit Byte limit to inline files as Data URL
-   * @param {number} options.cssModules
    * @param {boolean} options.noEmitOnErrors disable emit while errors
    * @param {object} raw @see https://webpack.js.org/configuration
    */
@@ -105,7 +104,6 @@ class DefaultPreset {
       sourceMap: production ? false : 'eval',
       analyzer: !!production,
       dataURLLimit: production ? 5120 : 1,
-      cssModules: false,
       noEmitOnErrors: true,
     };
   };
@@ -126,7 +124,6 @@ class DefaultPreset {
       hot,
       sourceMap,
       dataURLLimit,
-      cssModules,
     } = options;
     const production = this.isProduction();
     const fullPublicPath = command === 'start' && raw.devServer.public
@@ -288,15 +285,50 @@ class DefaultPreset {
             },
           ],
         },
-        css: {
-          test: /\.css$|\.less$|\.scss$/,
+        css$module: {
+          test: /\.module\.css$|\.module\.less$|\.module\.scss$/,
           use: [
             {
               loader: 'css-loader',
               options: {
                 importLoaders: 1,
                 minimize: production,
-                modules: cssModules,
+                modules: true,
+                localIdentName: production
+                  ? '[hash:base64:5]'
+                  : '[name]-[local]-[hash:base64:5]',
+                sourceMap: !production,
+              },
+            },
+            {
+              loader: 'postcss-loader',
+              options: {
+                // https://webpack.js.org/guides/migrating/#complex-options
+                ident: 'postcss',
+                plugins() {
+                  return [
+                    // stylelint(), // TODO
+                    autoprefixer(
+                      targets && targets.browsers
+                        ? { browsers: targets.browsers }
+                        : undefined,
+                    ),
+                  ];
+                },
+                sourceMap: !!sourceMap,
+              },
+            },
+          ],
+        },
+        css: {
+          test: /\.css$|\.less$|\.scss$/,
+          exclude: /\.module\.css$|\.module\.less$|\.module\.scss$/,
+          use: [
+            {
+              loader: 'css-loader',
+              options: {
+                importLoaders: 1,
+                minimize: production,
                 localIdentName: production
                   ? '[hash:base64:5]'
                   : '[name]-[local]-[hash:base64:5]',
