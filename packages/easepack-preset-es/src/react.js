@@ -6,7 +6,7 @@ const DefaultPreset = require('.//DefaultPreset');
 module.exports = (command, options, raw) => {
   const config = new DefaultPreset(command, options, raw);
   config.update('module.js.use.options.presets', (value) => {
-    value.push('react');
+    value.push('@babel/preset-react');
     return value;
   });
   const { hot = config.mode === 'development' } = options;
