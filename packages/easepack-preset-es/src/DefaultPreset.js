@@ -216,7 +216,7 @@ class DefaultPreset {
             loader: 'eslint-loader',
             options: {
               fix: false,
-              cache: true,
+              cache: false,
             },
           },
         },
