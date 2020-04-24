@@ -155,6 +155,21 @@ class DefaultPreset {
                 hash: false,
               }),
             );
+          } else if (typeof value === 'object') {
+            const { script, html } = value;
+            result.entry[key] = path.resolve(context, script);
+            const htmlPath = path.resolve(context, html);
+            result.plugins.push(
+              new HtmlWebpackPlugin({
+                inject: true,
+                chunksSortMode: 'dependency',
+                template: htmlPath,
+                filename: filename.html.replace('[name]', key),
+                // chunks: [key],
+                excludeChunks: namedInputKeys.filter(item => item !== key),
+                hash: false,
+              }),
+            );
           } else {
             result.entry[key] = value;
           }
