@@ -1,48 +1,50 @@
-Ease bundle frontend project base on webpack v4.
+Easepack 是基于 webpack 的通用打包工具，内置常用插件和加载器的默认配置。
 ========
 
-# Install
-Install with npm:
+[English Version](./README_en.md)
+
+## 安装
 
 > npm install --save-dev easepack
 
-Install with yarn:
+## 用法
 
-> yarn add easepack --dev
+启动开发服务器：
 
-# Usage
+> easepack start --config ./config/easepack.dev.js
 
-Start development server:
+构建生产环境:
 
-> easepack start --config <configuration file path>
+> easepack build --config ./config/easepack.prod.js
 
-Build production files:
+## 快速上手
 
-> easepack build --config <configuration file path>
-
-# Getting Started
-- Create project:
+- 创建项目:
 
     - `mkdir easepack-demo && cd easepack-demo`
     - `npm init -y`
     - `npm install easepack --save-dev`
 
     ```
-    easepack-demo
-    |- package.json
+      easepack-demo
+    + |- package.json
     ```
 
-- Create the following directory structure, files and their contents:
+- 创建文件:
 
-    - project
+    - .eslintrc
 
-        ```
-          easepack-demo
-          |- package.json
-        + |- easepack.js
-        + |- index.html
-        + |- /src
-        +   |- index.js
+        ```json
+        {
+          "extends": "eslint:recommended",
+          "parserOptions": {
+            "ecmaVersion": 6,
+            "sourceType": "module"
+          },
+          "env": {
+            "browser": true
+          }
+        }
         ```
 
     - easepack.js
@@ -51,9 +53,9 @@ Build production files:
         module.exports = {
           presets: [
             [
-              require.resolve('easepack/lib/config/es'),
+              require.resolve('easepack/lib/config/es'), /* 继承 easepack/lib/config/es 的配置 */
               {
-                input: 'index.html'
+                input: 'index.html' /* 设置项目入口文件 */
               }
             ]
           ]
@@ -85,89 +87,115 @@ Build production files:
         document.body.appendChild(component());
         ```
 
-- Start development server:
+    ```
+      easepack-demo
+      |- package.json
+    + |- .eslintrc
+    + |- easepack.js
+    + |- index.html
+    + |- /src
+    +   |- index.js
+    ```
 
-    `npx easepack start --config ./config.js`
+- 启动开发服务器:
 
-- Build production files:
+    `npx easepack start --config ./easepack.js`
 
-    `npx easepack build --config ./config.js`
+- 构建生产环境:
 
-# Configuration
+    `npx easepack build --config ./easepack.js`
 
-Easepack configuration is same with webpack except `presets`, which is used to preset common config. By defaults, easepack provide es and react preset, you could provide yourself presets.
+## 配置
 
+Easepack 在 webpack 的基础上增加了一项配置 `preset`，用于继承一些公用的配置。除此之外，Easepack 支持 webpack 的所有配置，并且会覆盖 `preset` 中的配置。
 ```
 {
-  // like babel presets
+  // 类似 babel 的 presets
   presets: [
     [
-      string, // preset module path
-      object // preset option
+      string, // 预设模块的路径（绝对路径）
+      object // 预设模块的参数
     ]
-    // could config more preset
+    // 可以配置多个预设模块
   ]
 }
 ```
 
-## Default Presets
+### 内置 Presets
 
-Easepack provide two preset, es and react. They all support follow options:
+到目前为止，Easepack 内置了两个预设配置：`easepack/lib/config/es` 和 `easepack/lib/config/react`。
+除了后者针对 react 增加了一些 babel 配置外，它们数都支持以下预设参数：
 
-- mode: used to config webpack [mode](https://webpack.js.org/concepts/mode).
+- mode: 构建模式，等同于 webpack4 新增的属性 [mode](https://webpack.js.org/concepts/mode).
 
-    By default, easepack config mode by command, build with `production`, start with `development`.
+    Easepack 默认根据构建命令来设置 mode。如果是 `build`， 那么 `mode` 默认设置为 `production`。如果是 `start`，那么 `mode` 默认设置为 `development`。
 
-- context: used to config webpack [contenxt](https://webpack.js.org/configuration/entry-context/#context), default is project root path.
-- input: used to config webpack [entry](https://webpack.js.org/configuration/entry-context/#entry), and it support html file, default is `src/index.js`.
-- vendors: used to dll build, recommend use in development. 
+- context：基础目录，绝对路径，用于从配置中解析入口起点和加载器，等同于 [contenxt](https://webpack.js.org/configuration/entry-context/#context)，默认值为项目的根路径。
+- input：起点或是应用程序的起点入口，等同于 [entry](https://webpack.js.org/configuration/entry-context/#entry)，默认值为 `src/index.js`。
+- vendors：构建缓存（DLL 插件实现），推荐在开发环境使用，生成环境的拆包请使用 webpack4 的 splitChunks。
 
-    - false: disable dll build, default value
-    - true: build dependencies of package.json
-    - string|array|object: same with webpack [entry](https://webpack.js.org/configuration/entry-context/#entry)
+    - false: 禁用该项功能，默认值。
+    - true: 自动查找项目的第三方依赖来构建缓存（package.json 的 dependencies）
+    - string|array|object: 等同于 [entry](https://webpack.js.org/configuration/entry-context/#entry)，可以自定义构建缓存模块。
 
-- outputPath: used to config [output.path](https://webpack.js.org/configuration/output/#output-path), default is `dist`
-- publicPath: : used to config [output.publicPath](https://webpack.js.org/configuration/output/#output-publicpath)
-- filename: used to config bundle file name
+- outputPath：构建输出路径，等用于 [output.path](https://webpack.js.org/configuration/output/#output-path)，默认值是 `dist`。
+- publicPath： 打包资源的服务路径，等同于 [output.publicPath](https://webpack.js.org/configuration/output/#output-publicpath)，默认值是 `/`。
+- filename：输出文件命名方式
 
-    - filename.js: JavaScript filename
-    - filename.css: CSS filename
-    - filename.media: Image, Audio and other media filename
-    - filename.library: used to define dll library filename
-    - filename.html: HTML filename
+    - filename.js: JS 文件命名规则
+    - filename.css: CSS 文件命名规则
+    - filename.media: 图片，音频等其他媒体文件的命名规则
+    - filename.library: DLL 库的命名规则
+    - filename.html: HTML 的命名规则
 
-    By default, easepack config with following rules:
+    默认情况下，easepack 针对不同的 mode 提供了不同的默认配置
 
-    ```javascript
-    production = {
-      js: '[name].[contenthash:8].js',
-      css: '[name].[contenthash:8].css',
-      media: '[name].[hash:8].[ext]',
-      manifest: '[name].manifest.json',
-      library: '[name]_library',
-      html: '[name].html'
-    };
-    development = {
-      js: '[name].js',
-      css: '[name].css',
-      media: '[name].[hash:8].[ext]',
-      manifest: '[name].manifest.json',
-      library: '[name]_library',
-      html: '[name].html'
-    };
-    ```
+    - 生产环境
 
-- targets: used to define [babel-preset-env targets](https://babeljs.io/docs/plugins/preset-env/)
-- env: define some special environment config
+        ```javascript
+        {
+          filename: {
+            js: '[name].[contenthash:8].js',
+            css: '[name].[contenthash:8].css',
+            media: '[name].[hash:8].[ext]',
+            manifest: '[name].manifest.json',
+            library: '[name]_library',
+            html: '[name].html'
+          }
+        }
+        ```
 
-    - env.production
-    - env.development
+    - 开发环境
 
-## Custom Presets
+        ```javascript
+        {
+          filename: {
+            js: '[name].[hash:8].js',
+            css: '[name].[hash:8].css',
+            media: '[name].[hash:8].[ext]',
+            manifest: '[name].manifest.json',
+            library: '[name]_library',
+            html: '[name].html'
+          },
+        }
+        ```
 
-Refer to source code [es](./src/config/es.js) and [react](./src/config/react.js)
+- targets：编译兼容目标，等同于 [babel-preset-env targets](https://babeljs.io/docs/plugins/preset-env/)，默认值为 `{ browsers: ['last 2 versions', 'safari >= 7'] }`。
+- hot: 是否启用热加载，默认值为 `true`
+- sourceMap: 是否启用 sourceMap，等同于 [devtool](https://webpack.js.org/configuration/devtool/)，开发环境默认为 `eval`，生产环境默认为 `false`。
+- analyzer: 是否启用构建分析，为 `true` 会使用 `webpack-bundle-analyzer` 来分析打包文件的内部组成和模块占用大小。生成环境默认为 `true`，开发环境默认为 `false`。
+- dataURLLimit：设置 `url-loader` 的属性 [`limit`](https://github.com/webpack-contrib/url-loader#limit)，开发环境默认为 `1`，生产环境默认为 `5120`。
+- cssModules: 是否启动 CSS Modules，默认 `false`。
+- env：针对不同 `mode` 的特殊配置。
 
-# Examples
+    - env.production：在 `mode` 等于 `production` 时，该项配置会覆盖外部的预设参数。
+    - env.development：在 `mode` 等于 `development` 时，该项配置会覆盖外部的预设参数。
+
+### 自定义 Presets
+
+参考 [es](./src/config/es.js) 和 [react](./src/config/react.js)。
+
+## 示例
 
 - [HTML Entry](./examples/entry)
 - [DLL](./examples/vendors)
